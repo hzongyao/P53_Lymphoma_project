@@ -1,0 +1,92 @@
+tmp <-  readRDS("ypl_se_list_N7M_har_all_data_se.rds")
+Idents(tmp) <- tmp$group_time
+tmp <- seurat_ident_reanalysis_hzy(se = tmp,
+                                   ident = c("CTR_4M","PCL_5M", "PCL_3M","PC_End","PC_End_P_2","PC_4M"),
+                                   multi = T,
+                                   SCTransform = T,
+                                   vars.to.regress = "percent.mito",
+                                   return.only.var.genes = FALSE,
+                                   resolution = c(seq(.4, 2.0, .2)),
+                                   diff = F)
+
+
+
+tmp <- readRDS("ypl_se_list_N7M_har_all_data_se_out.rds")
+ypl_se_list_N7M_har_all_data_se <- tmp$seurat_har 
+Idents(ypl_se_list_N7M_har_all_data_se) <- ypl_se_list_N7M_har_all_data_se$SCT_snn_res.0.8
+saveRDS(ypl_se_list_N7M_har_all_data_se,file="ypl_se_list_N7M_har_all_data_se.RDS")
+
+ypl_se_list_N7M_har_all_data_se <- readRDS("ypl_se_list_N7M_har_all_data_se.RDS")
+
+DimPlot(ypl_se_list_N7M_har_all_data_se,label = T,repel = T)
+
+Idents(ypl_se_list_N7M_har_all_data_se) <- ypl_se_list_N7M_har_all_data_se$group
+DimPlot(ypl_se_list_N7M_har_all_data_se,label = T,repel = T)
+Idents(ypl_se_list_N7M_har_all_data_se) <- ypl_se_list_N7M_har_all_data_se$SCT_snn_res.0.8
+
+
+
+seurat_ident_group_facet_bar_stat_hzy(se = ypl_se_list_N7M_har_all_data_se,
+                                      ident = "SCT_snn_res.0.8",group = "group",
+                                      ident_name_color = get_color_hzy(n = length(unique(ypl_se_list_N7M_har_all_data_se$SCT_snn_res.0.8))))
+
+
+G1S_marker_hzy = c(
+  "Rrm2", "Pcna", "Kiaa0101", "Hist1h4c", "Mlf1ip", "Gmnn", "Rnaseh2a", "Melk", "Cenpk", "Tk1", "Tmem106c",  "Cdca5", "Cks1b", "Cdc45", "Mcm3", "Cenpm", "Aurkb", "Pkmyt1", "Mcm4", "Asf1b", "Gins2", "Mcm2", "Fen1", "Rrm1", "Dut", "Rad51ap1", "Mcm7",  "Ccne2",  "Zwint", "Mcm5","Tyms","Ung","Mcm6", "Cdca7",  "Dtl",  "Prim1",   "Uhrf1",   "Hells",   "Rfc2",   "Rpa2",   "Nasp",   "Wdr76", "Slbp",  "Ubr7", "Pold3", "Msh2",  "Atad2",  "Rad51",  "Cdc6", "Exo1",  "Tipin", "Dscc1", "Blm",  "Casp8ap2",  "Usp1", "Clspn",  "Pola1", "Chaf1b", "Brip1", "E2f8"  )
+
+G2M_marker_hzy = c(
+  "Ccnb1", "Cdc20", "Ccnb2", "Plk1", "Ccna2", "Ckap2", "Knstrn", "Racgap1", "Cdca3", "Troap", "Kif2c", "Aurka", "Cenpf", "Kpna2","Kif20a", "Ect2", "Bub1", "Cdca8", "Bub1b", "Tacc3", "Ttk","Tuba1c", "Ncapd2", "Arl6ip1", "Kif4a", "Ckap2l", "Mzt1", "Kifc1", "Spag5", "Anp32e", "Kif11", "Psrc1", "Tubb4b", "Smc4", "Mxd3", "Cdc25b",   "Oip5",   "Reep4",   "Foxm1",   "Tmpo",   "Gpsm2",   "Hmgb3",   "Arhgap11a",   "Rangap1",   "H2afz",   "Mki67",   "Hmgb2",   "Cdk1",   "Nusap1",   "Ube2c",
+  "Birc5", "Tpx2", "Top2a", "Ndc80", "Cks2", "Nuf2","Cks1b", "Fam64a", "Aurkb",  "Gtse1", "Kif20b", "Hjurp", "Hn1","Cdc25c", "Dlgap5", "Cdca2", "Kif23", "Hmmr",  "Anln", "Lbr", "Ckap5",  "Cenpe", "Ctcf", "Nek2", "G2e3", "Gas2l3", "Cbx5", "Cenpa")
+
+G1S_marker_hzy <- base::intersect(G1S_marker_hzy,rownames(ypl_se_list_N7M_har_all_data_se))
+
+G2M_marker_hzy <- base::intersect(G2M_marker_hzy,rownames(ypl_se_list_N7M_har_all_data_se))
+
+plot_signature_Vln_plot_hzy(dat = ypl_se_list_N7M_har_all_data_se,gene =G1S_marker_hzy,label = "G1S_marker" )+ RotatedAxis()
+plot_signature_Vln_plot_hzy(dat = ypl_se_list_N7M_har_all_data_se,gene =G2M_marker_hzy,label = "G2M_marker" )+ RotatedAxis()
+
+plot_signature_Feature_plot_hzy(dat = ypl_se_list_N7M_har_all_data_se,gene =G1S_marker_hzy,label = "G1S_marker" )+ RotatedAxis()
+plot_signature_Feature_plot_hzy(dat = ypl_se_list_N7M_har_all_data_se,gene =G2M_marker_hzy,label = "G2M_marker" )+ RotatedAxis()
+
+
+Idents(ypl_se_list_N7M_har_all_data_se) <- ypl_se_list_N7M_har_all_data_se$SCT_snn_res.0.8
+all_marker <-
+  c("Mki67",
+    "Pcna",
+    "Trp53",
+    "Cd4",
+    "Cd8a",
+    "Ptcra",
+    "Cd19",
+    "Il2ra",
+    "Lyz2",
+    "Cd3e",
+    "Epcam",
+    "Kit",
+    "Prf1",
+    "Gzma","Nkg7","S100a8","Krt8")
+ 
+
+plot_save_hzy(plot_list = map(all_marker,function(x=.x){
+  p1 <- FeaturePlot(
+    object = ypl_se_list_N7M_har_all_data_se,
+    features = x,
+    cols = c("gray97", "#fc1a0e")
+  )  + theme_void()
+  
+  p2 <- VlnPlot(
+    object = ypl_se_list_N7M_har_all_data_se,
+    features = x,sort = T
+  )  + theme_test()
+  
+  return(p1+p2)
+}
+),type = "multi",wrap_plot = T,page_lay_out_matrix = matrix(
+  data = 1:4,
+  nrow = 2,
+  ncol = 2,
+  byrow = T
+),
+prefix = "ypl_se_list_N7M_har_all_data_se_marker",page_width = 20,page_height = 25)
+
+
